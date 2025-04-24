@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Demo Factoring", layout="wide")
-
 st.title("💼 Plataforma de Automatización de Factoring")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
@@ -19,7 +17,6 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 with tab1:
     st.header("Gestión de Clientes y Contratos")
     with st.form("form_cliente"):
-        st.subheader("🔹 Registro de Cliente")
         nombre = st.text_input("Nombre del Cliente")
         ruc = st.text_input("RUC")
         linea_credito = st.number_input("Línea de Financiamiento (USD)", min_value=0.0)
@@ -39,7 +36,6 @@ with tab1:
 with tab2:
     st.header("Administración de Fondos de Inversionistas")
     with st.form("form_fondos"):
-        st.subheader("🔹 Registro de Aporte de Inversionista")
         inversionista = st.text_input("Nombre del Inversionista")
         tipo = st.selectbox("Tipo de Inversionista", ["Interno", "Externo"])
         monto_aporte = st.number_input("Monto del Aporte (USD)", min_value=0.0)
@@ -57,76 +53,69 @@ with tab2:
 with tab3:
     st.header("Seguimiento de Notas de Crédito")
     with st.form("form_notas"):
-        st.subheader("🔹 Registro de Nota de Crédito")
         cliente = st.text_input("Cliente")
-        fecha_esperada = st.date_input("Fecha esperada de emisión")
-        valor = st.number_input("Valor de la Nota (USD)", min_value=0.0)
-        endoso_valido = st.checkbox("Endoso válido")
-        submit3 = st.form_submit_button("Registrar Nota")
-        if submit3:
-            if not cliente or valor == 0.0:
-                st.error("Cliente y valor son obligatorios.")
-            elif not endoso_valido:
-                st.warning("Nota con endoso inválido. Revisión manual requerida.")
+        valor_nota = st.number_input("Valor de la Nota (USD)", min_value=0.0)
+        fecha_esperada = st.date_input("Fecha Esperada de Emisión")
+        submit_nota = st.form_submit_button("Registrar Nota")
+        if submit_nota:
+            if not cliente or valor_nota == 0.0:
+                st.error("Por favor completa los datos obligatorios.")
             else:
-                st.success(f"Nota registrada correctamente para {cliente}.")
-                st.info("Agregada al cronograma de liquidación.")
+                st.success(f"Nota de crédito registrada para {cliente} por ${valor_nota:.2f}")
 
 with tab4:
     st.header("Motor de Cálculo de Comisiones")
     with st.form("form_comisiones"):
-        st.subheader("🔹 Cálculo de Comisión")
-        operacion_id = st.text_input("ID de Operación")
-        valor_operacion = st.number_input("Valor de la Operación (USD)", min_value=0.0)
-        porcentaje = st.slider("Porcentaje de Comisión (%)", 0.5, 15.0, 5.0)
-        submit4 = st.form_submit_button("Calcular")
-        if submit4:
-            if not operacion_id or valor_operacion == 0.0:
-                st.error("Todos los campos son obligatorios.")
+        operacion_id = st.text_input("ID de la Operación")
+        monto_operacion = st.number_input("Monto de la Operación (USD)", min_value=0.0)
+        porcentaje_comision = st.slider("Porcentaje de Comisión (%)", 0, 20, 10)
+        submit_comision = st.form_submit_button("Calcular Comisión")
+        if submit_comision:
+            if not operacion_id or monto_operacion == 0.0:
+                st.error("Debes ingresar los datos de operación.")
             else:
-                comision = (valor_operacion * porcentaje) / 100
-                st.success(f"Comisión calculada: ${comision:.2f} USD")
-                st.info("Utilidad distribuida y registro contable generado.")
+                comision = monto_operacion * (porcentaje_comision / 100)
+                utilidad_neta = monto_operacion - comision
+                st.success(f"Comisión calculada: ${comision:.2f}")
+                st.info(f"Utilidad neta: ${utilidad_neta:.2f}")
 
 with tab5:
-    st.header("📈 Dashboard Operativo en Tiempo Real")
-    st.subheader("📊 Indicadores Clave")
-    capital = np.random.randint(100000, 500000)
-    recuperacion = np.random.randint(70000, 120000)
-    notas = np.random.randint(50, 150)
-    clientes = ["Cliente A", "Cliente B", "Cliente C", "Cliente D"]
-    financiado = np.random.randint(10000, 50000, size=4)
+    st.header("Panel de Control y Analítica Operativa")
+    st.subheader("📊 Indicadores Generales")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Total Financiado", "$125,000")
+        st.metric("Notas de Crédito Emitidas", "18")
+    with col2:
+        st.metric("Comisión Promedio (%)", "10%")
+        st.metric("Inversionistas Activos", "5")
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Capital Financiado", f"${capital:,}")
-    col2.metric("Recuperación Total", f"${recuperacion:,}")
-    col3.metric("Notas Negociadas", f"{notas} notas")
-
-    st.subheader("📉 Financiamiento por Cliente")
-    df = pd.DataFrame({
-        "Cliente": clientes,
-        "Monto Financiado": financiado
+    st.subheader("🔍 Distribución de Aportes")
+    aportes_df = pd.DataFrame({
+        "Inversionista": ["Juan", "María", "Carlos", "Ana"],
+        "Monto (USD)": [20000, 35000, 15000, 30000]
     })
-    fig, ax = plt.subplots()
-    ax.bar(df["Cliente"], df["Monto Financiado"])
-    ax.set_ylabel("USD")
-    ax.set_title("Distribución de Financiamiento")
-    st.pyplot(fig)
+    fig1, ax1 = plt.subplots()
+    ax1.pie(aportes_df["Monto (USD)"], labels=aportes_df["Inversionista"], autopct="%1.1f%%")
+    ax1.axis("equal")
+    st.pyplot(fig1)
+
+    st.subheader("📈 Comisiones por Operación")
+    operaciones_df = pd.DataFrame({
+        "Operación": ["OP001", "OP002", "OP003", "OP004"],
+        "Monto": [30000, 25000, 40000, 30000],
+        "Comisión": [3000, 2500, 4000, 3000]
+    })
+    fig2, ax2 = plt.subplots()
+    ax2.bar(operaciones_df["Operación"], operaciones_df["Comisión"])
+    ax2.set_ylabel("USD")
+    ax2.set_title("Comisiones Generadas")
+    st.pyplot(fig2)
 
 with tab6:
     st.header("Detección de Anomalías (Arbutus Software)")
-    with st.form("form_anomalias"):
-        st.subheader("🔹 Simulación de Análisis")
-        opcion = st.selectbox("Tipo de Análisis", [
-            "Notas de crédito duplicadas",
-            "Clientes con observaciones SRI",
-            "Variaciones atípicas por cliente"
-        ])
-        submit6 = st.form_submit_button("Ejecutar Análisis")
-        if submit6:
-            if opcion == "Notas de crédito duplicadas":
-                st.warning("⚠️ Se detectaron 2 notas duplicadas con valores idénticos.")
-            elif opcion == "Clientes con observaciones SRI":
-                st.warning("🚨 Cliente 'XYZ Corp' tiene historial de rechazos tributarios.")
-            else:
-                st.warning("📊 Cliente 'ABC Ltda' con variaciones > 150% en últimos 30 días.")
+    st.write("- Integración en tiempo real con datos operativos")
+    st.write("- Supervisión continua con reglas de auditoría")
+    st.write("- Generación de alertas inteligentes")
+    if st.button("🔍 Ejecutar análisis de anomalías"):
+        st.warning("2 notas de crédito duplicadas encontradas.")
