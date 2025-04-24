@@ -19,18 +19,19 @@ with tab1:
     with st.form("form_cliente"):
         nombre = st.text_input("Nombre del Cliente")
         ruc = st.text_input("RUC")
-        linea_credito = st.number_input("Línea de Financiamiento (USD)", min_value=0.0)
+        monto_financiado = st.number_input("Monto financiado del reclamo (USD)", min_value=0.0)
+        tipo_reclamo = st.selectbox("Tipo de Reclamo", ["IVA", "IR", "ISD"])
         kyc_ok = st.checkbox("Documentación KYC completa")
         contrato_firmado = st.checkbox("Contrato firmado")
         garantia_validada = st.checkbox("Garantía validada")
         submit = st.form_submit_button("Registrar Cliente")
         if submit:
-            if not nombre or not ruc or linea_credito == 0.0:
+            if not nombre or not ruc or monto_financiado == 0.0:
                 st.error("Por favor completa todos los campos obligatorios.")
             elif not (kyc_ok and contrato_firmado and garantia_validada):
                 st.warning("Faltan requisitos documentales.")
             else:
-                st.success(f"✅ Cliente '{nombre}' registrado correctamente.")
+                st.success(f"✅ Cliente '{nombre}' registrado con reclamo de tipo {tipo_reclamo}.")
                 st.info("Cliente vinculado con el SRI para trazabilidad tributaria.")
 
 with tab2:
