@@ -15,11 +15,27 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 
 with tab1:
     st.header("Gestión de Clientes y Contratos")
-    st.write("- Registro y validación de clientes")
-    st.write("- Control documental (KYC, contratos, garantías)")
-    st.write("- Línea de financiamiento y vinculación con el SRI")
-    if st.button("🔄 Simular Registro de Cliente"):
-        st.success("Cliente registrado y vinculado correctamente.")
+
+    with st.form("form_cliente"):
+        st.subheader("🔹 Registro de Cliente")
+
+        nombre = st.text_input("Nombre del Cliente")
+        ruc = st.text_input("RUC")
+        linea_credito = st.number_input("Línea de Financiamiento (USD)", min_value=0.0)
+        kyc_ok = st.checkbox("Documentación KYC completa")
+        contrato_firmado = st.checkbox("Contrato firmado")
+        garantia_validada = st.checkbox("Garantía validada")
+        
+        submit = st.form_submit_button("Registrar Cliente")
+
+        if submit:
+            if not nombre or not ruc or linea_credito == 0.0:
+                st.error("Por favor completa todos los campos obligatorios.")
+            elif not (kyc_ok and contrato_firmado and garantia_validada):
+                st.warning("Faltan requisitos documentales.")
+            else:
+                st.success(f"✅ Cliente '{nombre}' registrado correctamente.")
+                st.info("Cliente vinculado con el SRI para trazabilidad tributaria.")
 
 with tab2:
     st.header("Administración de Fondos de Inversionistas")
