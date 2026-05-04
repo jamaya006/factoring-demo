@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}
+<div class='d-flex gap-2 mb-3'><a class='btn btn-sm btn-primary' href='{% url "project_create" %}'>Nuevo Proyecto</a><a class='btn btn-sm btn-secondary' href='{% url "import_master" %}'>Importar Excel</a><a class='btn btn-sm btn-success' href='{% url "take_capture" %}'>Captura móvil</a></div>
+<table class='table table-sm'><tr><th>Proyecto</th><th>Cliente</th><th></th></tr>{% for p in projects %}<tr><td>{{p.name}}</td><td>{{p.client}}</td><td><a href='{% url "run_reconciliation" p.id %}'>Conciliar</a> | <a href='{% url "export_report" p.id %}'>Exportar</a></td></tr>{% empty %}<tr><td colspan='3'>Sin proyectos</td></tr>{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content %}
+<h4>Captura física</h4>
+<form method='post' enctype='multipart/form-data' class='row g-2'>{% csrf_token %}
+<div class='col-12'>{{ form.as_p }}</div>
+<div class='col-12'><label>Fotos</label><input class='form-control' type='file' name='photos' multiple accept='image/*' capture='environment'></div>
+<div class='col-12'><button type='button' class='btn btn-outline-secondary' onclick='scanMock()'>Escanear QR/Código</button></div>
+<button class='btn btn-success'>Registrar</button></form>
+<script>
+function scanMock(){const val=prompt('Ingrese valor escaneado');if(val){document.getElementById('id_observed_plate_code').value=val;document.getElementById('id_qr_value').value=val;}}
+</script>
+{% endblock %}
